@@ -1,0 +1,19 @@
+{
+  "suite_name": "tool_calling_basic",
+  "test_cases": [
+    {
+      "id": "weather-paris",
+      "input": [{"role": "user", "content": "What is the weather in Paris?"}],
+      "expected_output": "sunny",
+      "expected_tools": [{"name": "get_weather", "args": {"city": "Paris"}}],
+      "tags": ["weather"]
+    },
+    {
+      "id": "calc-basic",
+      "input": [{"role": "user", "content": "What is 15 * 23?"}],
+      "expected_output": "345",
+      "expected_tools": [{"name": "calculate", "args": {"expression": "15 * 23"}}],
+      "tags": ["math"]
+    }
+  ]
+}

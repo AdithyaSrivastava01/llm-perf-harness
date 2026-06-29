@@ -123,7 +123,7 @@ async def _compute_deepeval_metric(
                     or "rate" in str(e).lower()
                     or "quota" in str(e).lower()
                 ):
-                    wait = 20 * (attempt + 1)
+                    wait = 65  # wait full minute for Gemini free tier reset
                     _time.sleep(wait)
                 else:
                     raise

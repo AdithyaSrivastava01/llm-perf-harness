@@ -52,14 +52,27 @@ async def probe_endpoint(req: ProbeRequest) -> ProbeResponse:
         return ProbeResponse(reachable=False, detected_capabilities=[], error=str(e))
 
 
-@router.post("/quick-eval", response_model=QuickEvalResponse)
-async def quick_eval_endpoint(req: QuickEvalRequest) -> QuickEvalResponse:
-    result = await run_quick_eval(
-        endpoint_url=req.endpoint_url,
-        capabilities=set(req.capabilities),
-        auth_header=req.auth_header,
-        num_cases=req.num_cases,
-    )
+@router.post("/quick-eval")
+async def quick_eval_endpoint(req: QuickEvalRequest):
+    try:
+        result = await run_quick_eval(
+            endpoint_url=req.endpoint_url,
+            capabilities=set(req.capabilities),
+            auth_header=req.auth_header,
+            num_cases=req.num_cases,
+        )
+    except Exception as e:
+        error_msg = str(e)
+        if (
+            "429" in error_msg
+            or "rate" in error_msg.lower()
+            or "quota" in error_msg.lower()
+        ):
+            return {
+                "error": "Rate limit exceeded. Wait 60 seconds and try again.",
+                "retry_after": 60,
+            }
+        return {"error": f"Eval failed: {error_msg}"}
     s = result.summary
     cases = [
         {

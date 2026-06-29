@@ -76,6 +76,8 @@ async def _compute_deepeval_metric(
     import asyncio
 
     def _run_deepeval() -> float:
+        import time as _time
+
         from deepeval.metrics import (
             AnswerRelevancyMetric,
             ContextualRelevancyMetric,
@@ -87,7 +89,6 @@ async def _compute_deepeval_metric(
 
         from harness.config import settings
 
-        # Use Gemini as judge via LiteLLM
         judge_model = LiteLLMModel(
             model="gemini/gemini-2.5-flash",
             api_key=settings.google_api_key,
@@ -110,6 +111,22 @@ async def _compute_deepeval_metric(
         if metric_cls is None:
             raise ValueError(f"Unknown DeepEval metric: {config.name}")
         metric = metric_cls(threshold=config.threshold, model=judge_model)
+
+        # Retry with backoff for rate limits
+        for attempt in range(3):
+            try:
+                metric.measure(test_case)
+                return metric.score
+            except Exception as e:
+                if (
+                    "429" in str(e)
+                    or "rate" in str(e).lower()
+                    or "quota" in str(e).lower()
+                ):
+                    wait = 20 * (attempt + 1)
+                    _time.sleep(wait)
+                else:
+                    raise
         metric.measure(test_case)
         return metric.score
 

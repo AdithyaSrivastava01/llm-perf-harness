@@ -55,6 +55,11 @@ export default function QuickEvalPage() {
         }),
       });
       const data = await res.json();
+      if (data.error) {
+        setError(data.error);
+        setStep("confirm");
+        return;
+      }
       setResult(data);
       setStep("done");
     } catch (e: any) {

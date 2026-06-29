@@ -1,0 +1,12 @@
+{
+  "suite_name": "rag_basic",
+  "test_cases": [
+    {
+      "id": "rag-fastapi",
+      "input": [{"role": "user", "content": "What is FastAPI and who created it?"}],
+      "expected_output": "FastAPI is a modern web framework created by Sebastián Ramírez",
+      "reference_contexts": ["FastAPI is a modern, high-performance web framework for building APIs with Python. Created by Sebastián Ramírez."],
+      "tags": ["fastapi"]
+    }
+  ]
+}

@@ -37,11 +37,27 @@ CAPABILITY_METRICS: dict[str, list[MetricConfig]] = {
 }
 
 QUICK_TEST_CASES = [
-    {"input": "What can you help me with?", "tags": ["general"]},
-    {"input": "What is the capital of France?", "tags": ["knowledge"]},
-    {"input": "Summarize your main capabilities in one sentence.", "tags": ["general"]},
-    {"input": "What is 25 * 4?", "tags": ["math"]},
-    {"input": "Explain what you do in simple terms.", "tags": ["general"]},
+    {
+        "input": "What can you help me with?",
+        "expected_output": "help assistant questions",
+        "tags": ["general"],
+    },
+    {
+        "input": "What is the capital of France?",
+        "expected_output": "Paris",
+        "tags": ["knowledge"],
+    },
+    {
+        "input": "Summarize your main capabilities in one sentence.",
+        "expected_output": "help assistant",
+        "tags": ["general"],
+    },
+    {"input": "What is 25 * 4?", "expected_output": "100", "tags": ["math"]},
+    {
+        "input": "Explain what you do in simple terms.",
+        "expected_output": "help questions assistant",
+        "tags": ["general"],
+    },
 ]
 
 
@@ -72,7 +88,7 @@ async def run_quick_eval(
         EvalTestCase(
             id=f"quick-{i}",
             input=[Turn(role="user", content=tc["input"])],
-            expected_output=None,
+            expected_output=tc.get("expected_output"),
             expected_tools=None,
             reference_contexts=None,
             tags=tc["tags"],

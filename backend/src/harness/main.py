@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from harness.api.agui import setup_agui_endpoint
 from harness.api.health import router as health_router
+from harness.api.quick_eval_routes import router as quick_eval_router
 from harness.config import settings
 from harness.meta_tools.registry import init_registry
 
@@ -25,6 +26,7 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
     app.include_router(health_router)
+    app.include_router(quick_eval_router)
     setup_agui_endpoint(app)
     return app
 

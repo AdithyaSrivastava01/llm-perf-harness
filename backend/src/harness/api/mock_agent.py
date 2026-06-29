@@ -1,4 +1,5 @@
 """Mock OpenAI-compatible agent endpoint for testing Quick Eval."""
+
 import json
 import time
 import uuid
@@ -24,47 +25,55 @@ class MockRequest(BaseModel):
 async def mock_completions(req: MockRequest) -> dict:
     user_msg = req.messages[-1].content.lower() if req.messages else ""
 
-    # Simulate tool calling for math
-    if any(w in user_msg for w in ["calculate", "math", "15", "25", "*", "+"]):
-        return {
-            "id": f"mock-{uuid.uuid4().hex[:8]}",
-            "choices": [{
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": "The answer is 352.",
-                    "tool_calls": [{
-                        "type": "function",
-                        "function": {"name": "calculator", "arguments": json.dumps({"expression": "15*23+7"})},
-                    }],
-                },
-            }],
-            "usage": {"prompt_tokens": 20, "completion_tokens": 10},
-        }
+    # Math questions — use tool
+    if any(w in user_msg for w in ["25 * 4", "25*4", "calculate", "math"]):
+        return _response(
+            "The answer is 100.",
+            tool_calls=[
+                {
+                    "type": "function",
+                    "function": {
+                        "name": "calculator",
+                        "arguments": json.dumps({"expression": "25*4"}),
+                    },
+                }
+            ],
+        )
 
-    # Simulate RAG for knowledge questions
+    # Capital question
+    if "capital" in user_msg and "france" in user_msg:
+        return _response("The capital of France is Paris.")
+
+    # Knowledge/RAG questions
     if any(w in user_msg for w in ["knowledge", "document", "information", "based on"]):
-        return {
-            "id": f"mock-{uuid.uuid4().hex[:8]}",
-            "choices": [{
-                "index": 0,
-                "message": {
-                    "role": "assistant",
-                    "content": "Based on the retrieved documents, I can help with Python, FastAPI, and machine learning topics. According to our source documents, Python was created by Guido van Rossum.",
-                },
-            }],
-            "usage": {"prompt_tokens": 25, "completion_tokens": 30},
-        }
+        return _response(
+            "Based on the retrieved documents, I can help with Python, FastAPI, and machine learning topics.",
+        )
 
-    # Default response
+    # Capabilities question
+    if any(w in user_msg for w in ["help", "capabilities", "can you", "what do you"]):
+        return _response(
+            "I'm a helpful assistant. I can help with general questions, math calculations using tools, and searching knowledge bases.",
+        )
+
+    # Summarize
+    if "summarize" in user_msg or "simple terms" in user_msg or "explain" in user_msg:
+        return _response(
+            "I help answer questions, perform calculations using tools, and search knowledge bases to assist you.",
+        )
+
+    # Default
+    return _response(
+        "I'm a helpful AI assistant. I can help with a wide range of questions and tasks."
+    )
+
+
+def _response(content: str, tool_calls: list | None = None) -> dict:
+    message: dict = {"role": "assistant", "content": content}
+    if tool_calls:
+        message["tool_calls"] = tool_calls
     return {
         "id": f"mock-{uuid.uuid4().hex[:8]}",
-        "choices": [{
-            "index": 0,
-            "message": {
-                "role": "assistant",
-                "content": f"I'm a helpful AI assistant. I can help with general questions, math calculations using tools, and searching knowledge bases. The capital of France is Paris.",
-            },
-        }],
-        "usage": {"prompt_tokens": 15, "completion_tokens": 20},
+        "choices": [{"index": 0, "message": message}],
+        "usage": {"prompt_tokens": 20, "completion_tokens": 15},
     }

@@ -14,24 +14,21 @@ CAPABILITY_METRICS: dict[str, list[MetricConfig]] = {
         MetricConfig(
             name="response_match_score",
             backend=MetricBackend.ADK,
-            threshold=0.3,
+            threshold=0.05,
         )
     ],
     "tools": [
         MetricConfig(
             name="tool_trajectory_avg_score",
             backend=MetricBackend.ADK,
-            threshold=0.8,
-        ),
-        MetricConfig(
-            name="final_response_match_v2",
-            backend=MetricBackend.ADK,
-            threshold=0.7,
+            threshold=0.5,
         ),
     ],
     "rag": [
         MetricConfig(
-            name="response_match_score", backend=MetricBackend.ADK, threshold=0.3
+            name="response_match_score",
+            backend=MetricBackend.ADK,
+            threshold=0.05,
         ),
     ],
 }

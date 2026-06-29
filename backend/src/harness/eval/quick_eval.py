@@ -71,7 +71,7 @@ async def run_quick_eval(
     endpoint_url: str,
     capabilities: set[str],
     auth_header: str | None = None,
-    num_cases: int = 5,
+    num_cases: int = 2,
 ) -> QuickEvalResult:
     adapter = HTTPAgentAdapter(
         endpoint_url=endpoint_url,

@@ -9,26 +9,25 @@ from harness.eval.grader import GradeResult, calculate_grade
 from harness.eval.metrics import MetricBackend, MetricConfig
 from harness.eval.report import EvalReport
 
+# ADK metrics (no LLM judge calls — works offline, no rate limits)
+# Switch to DEEPEVAL backend when you have a paid Gemini/OpenAI key
 CAPABILITY_METRICS: dict[str, list[MetricConfig]] = {
     "text": [
         MetricConfig(
-            name="answer_relevancy",
-            backend=MetricBackend.DEEPEVAL,
-            threshold=0.5,
-        )
+            name="response_match_score", backend=MetricBackend.ADK, threshold=0.05
+        ),
     ],
     "tools": [
         MetricConfig(
-            name="tool_trajectory_avg_score",
-            backend=MetricBackend.ADK,
-            threshold=0.5,
+            name="tool_trajectory_avg_score", backend=MetricBackend.ADK, threshold=0.5
+        ),
+        MetricConfig(
+            name="response_match_score", backend=MetricBackend.ADK, threshold=0.05
         ),
     ],
     "rag": [
         MetricConfig(
-            name="faithfulness",
-            backend=MetricBackend.DEEPEVAL,
-            threshold=0.5,
+            name="response_match_score", backend=MetricBackend.ADK, threshold=0.05
         ),
     ],
 }

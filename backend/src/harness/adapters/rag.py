@@ -58,20 +58,13 @@ class RAGAdapter:
                 new_message=message,
             ):
                 raw_events.append(event)
-                if event.actions and event.actions.function_calls:
-                    for fc in event.actions.function_calls:
-                        tool_calls.append(
-                            ToolCall(name=fc.name, args=dict(fc.args or {}))
-                        )
-                if event.actions and event.actions.function_responses:
-                    for fr in event.actions.function_responses:
-                        if fr.name == "retrieve_documents" and fr.response:
-                            retrieved_contexts.append(str(fr.response))
+                for fc in event.get_function_calls():
+                    tool_calls.append(ToolCall(name=fc.name, args=dict(fc.args or {})))
+                for fr in event.get_function_responses():
+                    if fr.name == "retrieve_documents" and fr.response:
+                        retrieved_contexts.append(str(fr.response))
                 if event.is_final_response() and event.content and event.content.parts:
                     final_output = event.content.parts[0].text or ""
-                if hasattr(event, "usage") and event.usage:
-                    input_tokens += getattr(event.usage, "prompt_tokens", 0)
-                    output_tokens += getattr(event.usage, "completion_tokens", 0)
 
         elapsed = (time.monotonic() - start) * 1000
         return AgentResponse(

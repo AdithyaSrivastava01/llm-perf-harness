@@ -14,6 +14,7 @@ if settings.openai_api_key:
 
 from harness.api.agui import setup_agui_endpoint  # noqa: E402
 from harness.api.health import router as health_router  # noqa: E402
+from harness.api.mock_agent import router as mock_router  # noqa: E402
 from harness.api.quick_eval_routes import router as quick_eval_router  # noqa: E402
 from harness.meta_tools.registry import init_registry  # noqa: E402
 
@@ -35,6 +36,7 @@ def create_app() -> FastAPI:
     )
     app.include_router(health_router)
     app.include_router(quick_eval_router)
+    app.include_router(mock_router)
     setup_agui_endpoint(app)
     return app
 

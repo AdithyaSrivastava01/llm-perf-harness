@@ -89,7 +89,7 @@ async def _compute_deepeval_metric(
 
         # Use Gemini as judge via LiteLLM
         judge_model = LiteLLMModel(
-            model="gemini/gemini-2.0-flash",
+            model="gemini/gemini-2.5-flash",
             api_key=settings.google_api_key,
         )
 

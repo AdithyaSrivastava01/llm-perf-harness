@@ -1,13 +1,21 @@
+import os
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from harness.api.agui import setup_agui_endpoint
-from harness.api.health import router as health_router
-from harness.api.quick_eval_routes import router as quick_eval_router
 from harness.config import settings
-from harness.meta_tools.registry import init_registry
+
+# ADK reads API keys directly from os.environ
+if settings.google_api_key:
+    os.environ.setdefault("GOOGLE_API_KEY", settings.google_api_key)
+if settings.openai_api_key:
+    os.environ.setdefault("OPENAI_API_KEY", settings.openai_api_key)
+
+from harness.api.agui import setup_agui_endpoint  # noqa: E402
+from harness.api.health import router as health_router  # noqa: E402
+from harness.api.quick_eval_routes import router as quick_eval_router  # noqa: E402
+from harness.meta_tools.registry import init_registry  # noqa: E402
 
 
 @asynccontextmanager

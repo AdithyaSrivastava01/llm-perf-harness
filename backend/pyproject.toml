@@ -8,6 +8,7 @@ authors = [
 ]
 requires-python = ">=3.11"
 dependencies = [
+    "ag-ui-adk>=0.7.0",
     "aiosqlite>=0.22.1",
     "alembic>=1.18.5",
     "asyncpg>=0.31.0",

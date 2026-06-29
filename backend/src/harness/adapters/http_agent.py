@@ -86,9 +86,13 @@ class HTTPAgentAdapter:
         )
 
     def supported_metrics(self) -> list[str]:
-        metrics = ["answer_relevancy"]
+        metrics = [
+            "answer_relevancy",
+            "response_match_score",
+            "final_response_match_v2",
+        ]
         if "tools" in self._capabilities:
-            metrics.extend(["tool_trajectory_avg_score", "final_response_match_v2"])
+            metrics.append("tool_trajectory_avg_score")
         if "rag" in self._capabilities:
             metrics.extend(["faithfulness", "contextual_relevancy", "hallucination"])
         return metrics

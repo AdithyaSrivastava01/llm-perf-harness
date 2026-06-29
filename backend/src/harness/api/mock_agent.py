@@ -13,12 +13,14 @@ router = APIRouter(tags=["mock"])
 
 class MockMessage(BaseModel):
     role: str
-    content: str
+    content: str = ""
 
 
 class MockRequest(BaseModel):
-    messages: list[MockMessage]
+    messages: list[MockMessage] = []
     temperature: float = 0
+    model: str = ""
+    max_tokens: int | None = None
 
 
 @router.post("/v1/chat/completions")

@@ -73,7 +73,10 @@ class HTTPAgentAdapter:
                 headers=headers,
             )
             resp.raise_for_status()
-            raw = resp.json()
+            try:
+                raw = resp.json()
+            except Exception:
+                raw = {"choices": [{"message": {"content": resp.text or ""}}]}
         elapsed = (time.monotonic() - start) * 1000
         output, tool_calls, usage = parse_openai_response(raw)
         return AgentResponse(

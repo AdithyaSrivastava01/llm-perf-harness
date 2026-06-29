@@ -82,7 +82,16 @@ async def _compute_deepeval_metric(
             FaithfulnessMetric,
             HallucinationMetric,
         )
+        from deepeval.models.llms.litellm_model import LiteLLMModel
         from deepeval.test_case import LLMTestCase
+
+        from harness.config import settings
+
+        # Use Gemini as judge via LiteLLM
+        judge_model = LiteLLMModel(
+            model="gemini/gemini-2.0-flash",
+            api_key=settings.google_api_key,
+        )
 
         test_case = LLMTestCase(
             input=expected_output or "",
@@ -100,7 +109,7 @@ async def _compute_deepeval_metric(
         metric_cls = metric_map.get(config.name)
         if metric_cls is None:
             raise ValueError(f"Unknown DeepEval metric: {config.name}")
-        metric = metric_cls(threshold=config.threshold)
+        metric = metric_cls(threshold=config.threshold, model=judge_model)
         metric.measure(test_case)
         return metric.score
 

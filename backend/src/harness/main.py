@@ -6,9 +6,10 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from harness.config import settings
 
-# ADK reads API keys directly from os.environ
+# ADK reads GOOGLE_API_KEY, LiteLLM reads GEMINI_API_KEY
 if settings.google_api_key:
     os.environ.setdefault("GOOGLE_API_KEY", settings.google_api_key)
+    os.environ.setdefault("GEMINI_API_KEY", settings.google_api_key)
 if settings.openai_api_key:
     os.environ.setdefault("OPENAI_API_KEY", settings.openai_api_key)
 

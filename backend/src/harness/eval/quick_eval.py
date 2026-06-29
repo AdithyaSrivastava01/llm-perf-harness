@@ -12,9 +12,9 @@ from harness.eval.report import EvalReport
 CAPABILITY_METRICS: dict[str, list[MetricConfig]] = {
     "text": [
         MetricConfig(
-            name="response_match_score",
-            backend=MetricBackend.ADK,
-            threshold=0.05,
+            name="answer_relevancy",
+            backend=MetricBackend.DEEPEVAL,
+            threshold=0.5,
         )
     ],
     "tools": [
@@ -26,9 +26,9 @@ CAPABILITY_METRICS: dict[str, list[MetricConfig]] = {
     ],
     "rag": [
         MetricConfig(
-            name="response_match_score",
-            backend=MetricBackend.ADK,
-            threshold=0.05,
+            name="faithfulness",
+            backend=MetricBackend.DEEPEVAL,
+            threshold=0.5,
         ),
     ],
 }

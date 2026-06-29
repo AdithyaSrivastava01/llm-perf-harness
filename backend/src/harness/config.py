@@ -1,3 +1,4 @@
+from pydantic import Field
 from pydantic_settings import BaseSettings
 
 
@@ -11,6 +12,9 @@ class Settings(BaseSettings):
     otel_endpoint: str = ""
     environment: str = "development"
     cors_origins: list[str] = ["http://localhost:3000"]
+    encryption_key: str = Field(
+        default="dev-encryption-key-change-in-prod-32b=", alias="HARNESS_ENCRYPTION_KEY"
+    )
 
 
 settings = Settings()
